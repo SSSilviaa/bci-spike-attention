@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A CMU 15-618 project on GPU cross-attention for streaming brain–computer interface decoding.">
+  <title>Streaming Spike-Token Attention for BCI Decoding</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f6f2;
+      --ink: #162b2e;
+      --muted: #465b5e;
+      --line: #c8d4d0;
+      --accent: #156754;
+      --signal: #a7f0cd;
+      font-family: system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); }
+    .wrap { width: min(100% - 3rem, 68rem); margin-inline: auto; }
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: .6rem 2rem;
+      flex-wrap: wrap;
+      padding-block: 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .label {
+      margin: 0;
+      font: 650 .75rem/1.5 ui-monospace, Consolas, monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .term { color: var(--muted); }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 4rem);
+      padding-block: clamp(2.75rem, 7vw, 5.25rem);
+    }
+    .hero .label { color: var(--accent); }
+    h1 {
+      max-width: 19ch;
+      margin: .75rem 0 1.25rem;
+      font: 700 clamp(2.25rem, 5.3vw, 4.5rem)/1.04 Georgia, serif;
+      letter-spacing: -.042em;
+      text-wrap: balance;
+    }
+    .authors { margin: 0; color: var(--muted); font-weight: 600; }
+    figure {
+      margin: 0;
+      padding: clamp(1rem, 3vw, 1.6rem);
+      background: #12332f;
+      color: #e3f6ef;
+      border-radius: .8rem;
+    }
+    figure .label { color: var(--signal); }
+    svg { display: block; width: 100%; height: auto; margin-top: .6rem; }
+    figcaption { font-size: .875rem; line-height: 1.5; }
+    .details {
+      display: grid;
+      grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr);
+      gap: clamp(1.75rem, 5vw, 4rem);
+      padding-block: 2rem 3.75rem;
+      border-top: 1px solid var(--line);
+    }
+    h2 { margin: 0 0 .85rem; font: 700 1.8rem/1.2 Georgia, serif; }
+    .summary { margin: 0; max-width: 65ch; font-size: 1.06rem; line-height: 1.75; }
+    .materials {
+      align-self: start;
+      padding: 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: .8rem;
+      background: #fff;
+    }
+    .materials h2 { font-size: 1.35rem; }
+    .materials p { margin: 0; color: var(--muted); line-height: 1.5; }
+    footer { padding-block: 1.1rem 1.6rem; border-top: 1px solid var(--line); color: var(--muted); }
+
+    @media (max-width: 48rem) {
+      .hero, .details { grid-template-columns: minmax(0, 1fr); }
+      figure { width: min(100%, 27rem); }
+    }
+
+    @media (max-width: 25rem) {
+      .wrap { width: calc(100% - 2rem); }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead wrap">
+    <p class="label">Carnegie Mellon University</p>
+    <p class="label term">15-618 · Fall 2026</p>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="project-title">
+      <div>
+        <p class="label">Parallel Computer Architecture and Programming</p>
+        <h1 id="project-title">Streaming Spike-Token Attention for BCI Decoding</h1>
+        <p class="authors">Silvia Song · Vikram Mani</p>
+      </div>
+
+      <figure>
+        <p class="label">Overlapping windows</p>
+        <svg viewBox="0 0 360 140" aria-hidden="true">
+          <rect x="121" y="6" width="118" height="122" rx="5" fill="#a7f0cd" fill-opacity=".12"/>
+          <g fill="#e3f6ef" font-family="system-ui, sans-serif" font-size="13">
+            <text x="12" y="24">Previous window</text>
+            <text x="246" y="78">Next window</text>
+          </g>
+          <g fill="none" stroke="#b3cfc4" stroke-width="1.5">
+            <rect x="11" y="33" width="228" height="27" rx="4"/>
+            <rect x="121" y="87" width="228" height="27" rx="4"/>
+          </g>
+          <g fill="#a7f0cd">
+            <circle cx="136" cy="46.5" r="3.3"/><circle cx="157" cy="46.5" r="3.3"/>
+            <circle cx="192" cy="46.5" r="3.3"/><circle cx="207" cy="46.5" r="3.3"/>
+            <circle cx="224" cy="46.5" r="3.3"/><circle cx="136" cy="100.5" r="3.3"/>
+            <circle cx="157" cy="100.5" r="3.3"/><circle cx="192" cy="100.5" r="3.3"/>
+            <circle cx="207" cy="100.5" r="3.3"/><circle cx="224" cy="100.5" r="3.3"/>
+          </g>
+          <g fill="#b3cfc4">
+            <circle cx="24" cy="46.5" r="3.3"/><circle cx="49" cy="46.5" r="3.3"/>
+            <circle cx="63" cy="46.5" r="3.3"/><circle cx="94" cy="46.5" r="3.3"/>
+            <circle cx="260" cy="100.5" r="3.3"/><circle cx="269" cy="100.5" r="3.3"/>
+            <circle cx="295" cy="100.5" r="3.3"/><circle cx="322" cy="100.5" r="3.3"/>
+            <circle cx="335" cy="100.5" r="3.3"/>
+          </g>
+        </svg>
+        <figcaption>The highlighted spike bin appears in both decoding windows.</figcaption>
+      </figure>
+    </section>
+
+    <div class="details">
+      <section aria-labelledby="summary-title">
+        <h2 id="summary-title">Project summary</h2>
+        <p class="summary">We will use CUDA on a single NVIDIA GPU to study cross-attention for a streaming brain–computer interface (BCI) decoder. We will implement fresh attention and a GPU cache that reuses partial attention results across overlapping windows, then measure how the two approaches perform as spike counts and query overlap change; additionally, we will also test how assigning blocks by spike count and changing tile sizes affect per-window latency. Using those measurements, we will build and evaluate a simple policy that chooses when to reuse results and when to recompute them.</p>
+      </section>
+
+      <section class="materials" aria-labelledby="materials-title">
+        <h2 id="materials-title">Project materials</h2>
+        <p>The proposal PDF will be posted here.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="wrap label">15-618 Final Project</footer>
+</body>
+</html>
