@@ -141,7 +141,7 @@
     <div class="details">
       <section aria-labelledby="summary-title">
         <h2 id="summary-title">Project summary</h2>
-        <p class="summary">We will use CUDA on a single NVIDIA GPU to study and accelerate cross-attention for a streaming brain–computer interface (BCI) decoder. From a CPU implementation baseline supplied by Azabou et al. (2023), we plan to try several optimizations to speed up cross-attention, such as FlashAttention-inspired tiling, split-key attention, and a GPU cache that reuses partial attention results across overlapping windows to evaluate potential speedup.</p>
+        <p class="summary">Brain–computer interfaces need to turn neural activity into commands quickly. Models such as POYO process overlapping windows of neural spikes from scratch, so some attention work repeats as the window moves. We’ll compare fresh and cached CUDA implementations on synthetic and recorded spike data to find when reusing partial attention results reduces latency and how GPU tiling and work distribution affect the tradeoff.</p>
       </section>
 
       <section class="materials" aria-labelledby="materials-title">
