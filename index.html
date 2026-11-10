@@ -14,10 +14,12 @@
       --line: #c8d4d0;
       --accent: #156754;
       --signal: #a7f0cd;
+      --card: #fff;
       font-family: system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 4rem; }
     body { margin: 0; background: var(--paper); color: var(--ink); }
     .wrap { width: min(100% - 3rem, 68rem); margin-inline: auto; }
     .masthead {
@@ -52,6 +54,7 @@
       text-wrap: balance;
     }
     .authors { margin: 0; color: var(--muted); font-weight: 600; }
+    .authors a { color: inherit; text-underline-offset: .18em; }
     figure {
       margin: 0;
       padding: clamp(1rem, 3vw, 1.6rem);
@@ -62,30 +65,151 @@
     figure .label { color: var(--signal); }
     svg { display: block; width: 100%; height: auto; margin-top: .6rem; }
     figcaption { font-size: .875rem; line-height: 1.5; }
+
+    /* Section navigation */
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--paper);
+      border-block: 1px solid var(--line);
+    }
+    .toc ul {
+      display: flex;
+      gap: .35rem 1.4rem;
+      margin: 0;
+      padding-block: .8rem;
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .toc a {
+      color: var(--muted);
+      font: 650 .72rem/1.5 ui-monospace, Consolas, monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .toc a:hover, .toc a:focus-visible { color: var(--accent); }
+
     .details {
       display: grid;
       grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr);
       gap: clamp(1.75rem, 5vw, 4rem);
-      padding-block: 2rem 3.75rem;
-      border-top: 1px solid var(--line);
+      padding-block: 2.5rem 3.25rem;
     }
     h2 { margin: 0 0 .85rem; font: 700 1.8rem/1.2 Georgia, serif; }
+    h3 { margin: 1.75rem 0 .6rem; font: 700 1.2rem/1.3 Georgia, serif; }
     .summary { margin: 0; max-width: 65ch; font-size: 1.06rem; line-height: 1.75; }
     .materials {
       align-self: start;
       padding: 1.25rem;
       border: 1px solid var(--line);
       border-radius: .8rem;
-      background: #fff;
+      background: var(--card);
     }
     .materials h2 { font-size: 1.35rem; }
-    .materials p { margin: 0; line-height: 1.5; }
+    .materials ul { margin: 0; padding: 0; list-style: none; }
+    .materials li { padding-block: .65rem; border-top: 1px solid var(--line); line-height: 1.45; }
+    .materials li:first-child { border-top: 0; padding-top: 0; }
     .materials a { color: var(--accent); font-weight: 650; text-underline-offset: .18em; }
+    .materials .when { display: block; color: var(--muted); font-size: .85rem; }
+    .pending { color: var(--muted); font-weight: 600; }
+
+    /* Proposal sections */
+    .section {
+      display: grid;
+      grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+      gap: 1rem clamp(1.75rem, 5vw, 4rem);
+      padding-block: 2.75rem;
+      border-top: 1px solid var(--line);
+    }
+    .section > header .label { color: var(--accent); margin-bottom: .5rem; }
+    .section > header h2 { position: sticky; top: 3.5rem; }
+    .prose { min-width: 0; }
+    .prose p, .prose li { max-width: 68ch; font-size: 1.03rem; line-height: 1.75; }
+    .prose p { margin: 0 0 1.1rem; }
+    .prose a { color: var(--accent); text-underline-offset: .18em; }
+    .prose code { font: .92em ui-monospace, Consolas, monospace; }
+    .prose ol { margin: 0 0 1.1rem; padding-left: 1.4rem; }
+    .prose li { margin-bottom: .55rem; padding-left: .25rem; }
+    .prose li::marker { color: var(--accent); font-weight: 700; }
+    .refs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem .9rem;
+      margin: -.4rem 0 1.4rem;
+      padding: 0;
+      list-style: none;
+    }
+    .refs li { margin: 0; padding: 0; font-size: .92rem; }
+    .refs a { font-weight: 650; }
+
+    .paper-fig {
+      margin: .5rem 0 1.75rem;
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .paper-fig img { display: block; width: 100%; height: auto; }
+    .paper-fig.narrow img { width: min(100%, 26rem); margin-inline: auto; }
+    .paper-fig figcaption { margin-top: .9rem; color: var(--muted); max-width: 68ch; }
+    .paper-fig figcaption b { color: var(--ink); }
+    .paper-fig figcaption a { color: var(--accent); }
+
+    .goal-intro { font-weight: 500; }
+
+    /* Schedule */
+    .schedule {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      font-size: .98rem;
+    }
+    .schedule th, .schedule td {
+      padding: .9rem 1rem;
+      border-top: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.6;
+    }
+    .schedule thead th {
+      border-top: 0;
+      background: #e9eeea;
+      font: 650 .72rem/1.5 ui-monospace, Consolas, monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .schedule tbody th { width: 9.5rem; white-space: nowrap; font-weight: 700; }
+    .due {
+      display: inline-block;
+      margin-top: .35rem;
+      padding: .1rem .45rem;
+      border-radius: .3rem;
+      background: #dff5ea;
+      color: var(--accent);
+      font: 650 .68rem/1.5 ui-monospace, Consolas, monospace;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      white-space: normal;
+    }
+
     footer { padding-block: 1.1rem 1.6rem; border-top: 1px solid var(--line); color: var(--muted); }
 
     @media (max-width: 48rem) {
-      .hero, .details { grid-template-columns: minmax(0, 1fr); }
-      figure { width: min(100%, 27rem); }
+      .hero, .details, .section { grid-template-columns: minmax(0, 1fr); }
+      .hero figure { width: min(100%, 27rem); }
+      .section > header h2 { position: static; }
+    }
+
+    @media (max-width: 36rem) {
+      .schedule thead { display: none; }
+      .schedule, .schedule tbody, .schedule tr, .schedule th, .schedule td { display: block; width: 100%; }
+      .schedule tbody th { width: 100%; padding-bottom: 0; white-space: normal; }
+      .schedule td { border-top: 0; padding-top: .4rem; }
     }
 
     @media (max-width: 25rem) {
@@ -99,12 +223,12 @@
     <p class="label term">15-618 · Fall 2026</p>
   </header>
 
-  <main class="wrap">
-    <section class="hero" aria-labelledby="project-title">
+  <main>
+    <section class="hero wrap" aria-labelledby="project-title">
       <div>
         <p class="label">Parallel Computer Architecture and Programming</p>
         <h1 id="project-title">Streaming Spike-Token Attention for BCI Decoding</h1>
-        <p class="authors">Silvia Song · Vikram Mani</p>
+        <p class="authors">Silvia Song (jiayuns) · Vikram Mani (vmani)</p>
       </div>
 
       <figure>
@@ -138,7 +262,19 @@
       </figure>
     </section>
 
-    <div class="details">
+    <nav class="toc" aria-label="Sections">
+      <ul class="wrap">
+        <li><a href="#summary-title">Summary</a></li>
+        <li><a href="#background">Background</a></li>
+        <li><a href="#challenge">Challenge</a></li>
+        <li><a href="#resources">Resources</a></li>
+        <li><a href="#goals">Goals</a></li>
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+      </ul>
+    </nav>
+
+    <div class="details wrap">
       <section aria-labelledby="summary-title">
         <h2 id="summary-title">Project summary</h2>
         <p class="summary">Brain–computer interfaces need to turn neural activity into commands quickly. Models such as POYO process overlapping windows of neural spikes from scratch, so some attention work repeats as the window moves. We’ll compare fresh and cached CUDA implementations on synthetic and recorded spike data to find when reusing partial attention results reduces latency and how GPU tiling and work distribution affect the tradeoff.</p>
@@ -146,11 +282,156 @@
 
       <section class="materials" aria-labelledby="materials-title">
         <h2 id="materials-title">Project materials</h2>
-        <p><a href="proposal.pdf">View the project proposal (PDF)</a></p>
+        <ul>
+          <li><a href="proposal.pdf">Project proposal (PDF)</a><span class="when">Submitted Mon, Nov 9</span></li>
+          <li><span class="pending">Milestone report</span><span class="when">Due Mon, Nov 23</span></li>
+          <li><span class="pending">Final report</span><span class="when">Due Thu, Dec 10</span></li>
+          <li><span class="pending">Poster session</span><span class="when">Fri, Dec 11, 8:30–11:30 am</span></li>
+        </ul>
       </section>
     </div>
+
+    <section class="section wrap" id="background" aria-labelledby="background-title">
+      <header>
+        <p class="label">From the proposal</p>
+        <h2 id="background-title">Background</h2>
+      </header>
+      <div class="prose">
+        <p>A BCI decoder takes a sequence of recorded brain activity and predicts output that a device can use, such as how fast to move a cursor. An attention-based decoder like POYO represents each spike as a token for which neural unit fired and when. It compresses these spike tokens with cross-attention, in which 256 learned latent tokens act as the queries and the spike tokens supply the keys and values, then processes the latent tokens with self-attention and reads out a prediction. POYO decodes more accurately than earlier methods, reaching a velocity R² of 0.948 on the NLB MC_Maze dataset against 0.889 for a GRU (<a href="https://arxiv.org/abs/2310.16046">Azabou et al., 2023</a>). However, it processes each 1&nbsp;s window from scratch as the window slides forward, which makes it much more expensive at inference than recurrent decoders (<a href="https://arxiv.org/abs/2506.05320">Ryoo et al., 2025</a>).</p>
+
+        <p>Cross-attention is two matrix multiplies with a softmax between them: the scores are <i>S</i>&nbsp;=&nbsp;<i>QK</i>ᵀ/√<i>d</i>, each row of <i>S</i> goes through a softmax to give weights <i>P</i>, and the output is <i>O</i>&nbsp;=&nbsp;<i>PV</i>. FlashAttention (<a href="https://arxiv.org/abs/2205.14135">Dao et al., 2022</a>) computes these in blocks held in on-chip shared memory and keeps a running maximum and sum for each row, so the full score matrix is never stored (Figure 1). In our case, <i>S</i> has 256 rows and one column per spike, and the number of spikes changes from window to window. Different queries can be processed in parallel because each produces its own output. Split-key attention adds parallelism within a query: several GPU blocks each process a group of spikes, and their partial results are merged afterward, as in <a href="https://pytorch.org/blog/flash-decoding/">Flash-Decoding</a>.</p>
+
+        <figure class="paper-fig" id="figure-1">
+          <img src="assets/flashattention-figure1.jpg" width="1650" height="645" loading="lazy"
+               alt="Three panels from the FlashAttention paper: the GPU memory hierarchy with SRAM, HBM and CPU DRAM bandwidths; the FlashAttention tiling loops that copy blocks of Q, K and V into SRAM and write the output to HBM; and a bar chart of attention time on GPT-2, where PyTorch's matmul, dropout, softmax, mask and matmul steps take about 17 ms against about 2 ms for FlashAttention's fused kernel.">
+          <figcaption><b>Figure 1.</b> FlashAttention computes QKᵀ, the softmax and the product with V block by block in on-chip SRAM, so the full score matrix is never written to GPU memory. Figure from <a href="https://arxiv.org/abs/2205.14135">Dao et al. (2022)</a>.</figcaption>
+        </figure>
+
+        <p>Successive windows also overlap. POYO places 32 queries at each of eight evenly spaced timestamps, so after a 500&nbsp;ms shift, 128 of the 256 queries keep their timestamps and see the same spikes in the shared 500&nbsp;ms. We can cache the partial attention results for these query–spike pairs and reuse them in the next window, as long as their scores and values do not change (Figure 2).</p>
+
+        <figure class="paper-fig narrow" id="figure-2">
+          <img src="assets/cached-cross-attention.png" width="1184" height="1524" loading="lazy"
+               alt="Flowchart: recorded spikes (neuron ID, timestamp) feed a 1-second window advanced every 500 ms; spike keys and values grouped by time bin, together with 256 latent queries, enter GPU cross-attention, which loads reusable partial results from the previous window, computes missing partial results in parallel, then merges and normalizes them into 256 attention output vectors for a downstream decoder such as cursor velocity.">
+          <figcaption><b>Figure 2.</b> CUDA blocks compute partial attention for groups of queries and spikes. When the same query and spike bin carry over to the next window, the GPU can load their cached partial result and combine it with newly computed results.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section wrap" id="challenge" aria-labelledby="challenge-title">
+      <header>
+        <p class="label">From the proposal</p>
+        <h2 id="challenge-title">The challenge</h2>
+      </header>
+      <div class="prose">
+        <p>Our goal is a computation time of at most 10&nbsp;ms per window, the target for real-time BCI decoding. POYO takes about 30&nbsp;ms per prediction for the pretrained POYO-1 model and about 10&nbsp;ms for a single-session model on an RTX 8000 GPU (<a href="https://arxiv.org/abs/2506.05320">Ryoo et al., 2025</a>). The main competing model, POSSM, takes about 3.5&nbsp;ms on the same GPU and 2.4 to 5.7&nbsp;ms on a CPU. It gets there by replacing full-window attention with a recurrent state-space model that carries information forward between 50&nbsp;ms chunks instead of recomputing it. We want to keep full attention and make it cheaper, which requires parallelizing an irregular, memory-bound workload.</p>
+
+        <p>Caching saves dot products but adds cache reads and maintenance. If all 128 retained queries are reusable and half the spikes carry over, we skip 25% of the dot products, and we want to measure when that saving outweighs the overhead. Load balancing is harder because spike bins contain different numbers of spikes and each query’s softmax depends on all of its bins. Blocks can compute dot products independently, but their partial results must be merged before the query’s output is ready. Giving every bin the same number of blocks leaves cores idle while dense bins finish, so we will assign more blocks to denser bins. For sparse bins, though, each split does few dot products, so writing and merging its partial result becomes a larger share of the work.</p>
+
+        <p>Finally, tile sizes trade data reuse against occupancy. Larger tiles let each block reuse keys and values across more queries but use more registers and shared memory, which reduces how many blocks fit on an SM.</p>
+      </div>
+    </section>
+
+    <section class="section wrap" id="resources" aria-labelledby="resources-title">
+      <header>
+        <p class="label">From the proposal</p>
+        <h2 id="resources-title">Resources</h2>
+      </header>
+      <div class="prose">
+        <p>We will write the CUDA attention kernels from scratch and use torch_brain as a reference for spike tokenization and latent query layout: POYO and torch_brain provide a model reference and examples of how spike tokens, latent queries, and variable-length attention are handled.</p>
+        <ul class="refs">
+          <li><a href="https://arxiv.org/abs/2310.16046">POYO paper</a></li>
+          <li><a href="https://github.com/neuro-galaxy/torch_brain">torch_brain</a></li>
+        </ul>
+
+        <p>Flash-Decoding and FlashInfer provide references for splitting the key/value dimension, merging partial results, and scheduling variable-length attention.</p>
+        <ul class="refs">
+          <li><a href="https://pytorch.org/blog/flash-decoding/">Flash-Decoding</a></li>
+          <li><a href="https://arxiv.org/abs/2501.01005">FlashInfer paper</a></li>
+        </ul>
+
+        <p>FlashAttention-3 provides a reference for overlapping data movement with attention computation on the H100. The FlashAttention inference API shows how to update cached keys and values in place.</p>
+        <ul class="refs">
+          <li><a href="https://arxiv.org/abs/2407.08608">FlashAttention-3 paper</a></li>
+          <li><a href="https://github.com/Dao-AILab/flash-attention">FlashAttention repository</a></li>
+        </ul>
+
+        <p><a href="https://dandiarchive.org/dandiset/000140">NLB MC_Maze_Small</a> gives us freely available neural data from one session from a monkey performing a task (<a href="https://arxiv.org/abs/2109.04463">Pei et al., 2021</a>). We will also generate synthetic windows in Python by drawing Poisson spike times for a chosen number of units and firing rates, so that we can set the spike count in each 500&nbsp;ms bin and the fraction of reusable query–spike pairs independently.</p>
+      </div>
+    </section>
+
+    <section class="section wrap" id="goals" aria-labelledby="goals-title">
+      <header>
+        <p class="label">From the proposal</p>
+        <h2 id="goals-title">Goals and deliverables</h2>
+      </header>
+      <div class="prose">
+        <h3>Plan to achieve</h3>
+        <p class="goal-intro">We will implement a fresh CUDA version that computes cross-attention from scratch for each window and a cached version that reuses partial results across windows. We will check both against a PyTorch reference and evaluate the following optimizations.</p>
+        <ol>
+          <li><b>Cache partial attention across windows.</b> We will compare fresh and cached attention with the same tiling and split policy to isolate the effect of reuse.</li>
+          <li><b>Assign CUDA blocks based on spike count.</b> We will split dense bins across more blocks than sparse bins and compare this with giving every bin the same number of splits.</li>
+          <li><b>Tune tile sizes.</b> We will vary how many queries share each tile of spike keys and values in shared memory and how many spikes each tile holds, with the split policy held fixed.</li>
+          <li>We will report median and 99th-percentile latency per window on synthetic windows, where we vary the spike count and the fraction of reusable work, and on consecutive windows from the NLB MC_Maze_Small data.</li>
+        </ol>
+
+        <h3>Hope to achieve</h3>
+        <p class="goal-intro">Our stretch goal is to implement cross-attention in under 10&nbsp;ms budget for as many neuron tokens as possible, scaling beyond what the POYO paper achieved (20k neuron tokens in a 1 second timeslot). This will likely require the following:</p>
+        <ol>
+          <li><b>Choose when to use the cache.</b> We will test a policy that uses the window’s spike count and cache hits to choose between reuse and recomputation.</li>
+          <li><b>Overlap loading with computation.</b> If profiling shows blocks waiting on loads, we will load the next spike tile while computing on the current one.</li>
+          <li><b>Reuse prepared keys and values.</b> We will keep keys and values for spikes in the shared 500&nbsp;ms bin and prepare vectors only for new spikes, timing from spike events through the attention output.</li>
+          <li>Search literature for more recent attention optimizations and apply them</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section wrap" id="platform" aria-labelledby="platform-title">
+      <header>
+        <p class="label">From the proposal</p>
+        <h2 id="platform-title">Platform choice</h2>
+      </header>
+      <div class="prose">
+        <p>We will use CUDA on a single NVIDIA GeForce RTX 2080 GPU on the GHC machines. The query–spike dot products give us many independent operations, while the softmax requires us to combine results across the spike chunks. CUDA lets us control how these tasks map to thread blocks, how much state we write to memory, and how we merge it. This makes it possible to compare extra GPU parallelism, recomputation, and cache traffic on the same hardware.</p>
+      </div>
+    </section>
+
+    <section class="section wrap" id="schedule" aria-labelledby="schedule-title">
+      <header>
+        <p class="label">From the proposal</p>
+        <h2 id="schedule-title">Schedule</h2>
+      </header>
+      <div class="prose">
+        <table class="schedule">
+          <thead>
+            <tr><th scope="col">Week</th><th scope="col">Work and checkpoint</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Nov. 7–15<br><span class="due">Proposal due Nov 9</span></th>
+              <td>Submit the proposal on Nov. 9. Confirm the target GPU. Get a few consecutive NLB windows through the basic PyTorch reference. Pick a two-window test case and identify exactly which query–spike pairs should be reusable.</td>
+            </tr>
+            <tr>
+              <th scope="row">Nov. 16–22</th>
+              <td>Implement fresh split-key attention. Check it against PyTorch and collect initial latency measurements across spike counts. Use the PyTorch reference to check that reusing the shared bin’s partial result reproduces fresh attention after a 500&nbsp;ms shift.</td>
+            </tr>
+            <tr>
+              <th scope="row">Nov. 23–29<br><span class="due">Milestone due Nov 23</span></th>
+              <td>Submit the fresh baseline, initial measurements, and the two-window reuse check. Implement the CUDA cache and verify it over consecutive windows in the replay.</td>
+            </tr>
+            <tr>
+              <th scope="row">Nov. 30–Dec. 6</th>
+              <td>Compare fresh and cached attention on synthetic windows and the NLB data. Compare fixed and spike-count-based splits, then test tile sizes with the split policy held fixed. If time remains after these comparisons, test the adaptive cache policy if the measurements show a clear crossover. Try overlapping tile loads with computation if profiling shows that loads are a bottleneck. If we can time the replay starting from spike events, test whether reusing prepared keys and values reduces latency through the attention output.</td>
+            </tr>
+            <tr>
+              <th scope="row">Dec. 7–11<br><span class="due">Report Dec 10 · Poster Dec 11</span></th>
+              <td>Rerun any questionable measurements, finish the figures and poster. Submit the report by Dec.10 and present the poster on Dec 11.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
-  <footer class="wrap label">15-618 Final Project</footer>
+  <footer class="wrap label">15-618 Final Project · Silvia Song &amp; Vikram Mani</footer>
 </body>
 </html>
