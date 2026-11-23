@@ -160,6 +160,15 @@
 
     .goal-intro { font-weight: 500; }
 
+    .measurements { width: 100%; border-collapse: collapse; margin: 0 0 1.1rem; font-variant-numeric: tabular-nums; }
+    .measurements caption { text-align: left; margin-bottom: .6rem; font-weight: 650; }
+    .measurements th, .measurements td { padding: .65rem .5rem; border-bottom: 1px solid var(--line); text-align: right; }
+    .measurements th:first-child { text-align: left; }
+    .measurements tbody th { font-weight: 500; }
+    .measurements td { white-space: nowrap; }
+    .schedule p { margin: 0 0 .35rem; font-size: inherit; line-height: inherit; }
+    .schedule p:last-child { margin: 0; }
+
     /* Schedule */
     .schedule {
       width: 100%;
@@ -265,6 +274,7 @@
     <nav class="toc" aria-label="Sections">
       <ul class="wrap">
         <li><a href="#summary-title">Summary</a></li>
+        <li><a href="#milestone">Milestone</a></li>
         <li><a href="#background">Background</a></li>
         <li><a href="#challenge">Challenge</a></li>
         <li><a href="#resources">Resources</a></li>
@@ -277,19 +287,45 @@
     <div class="details wrap">
       <section aria-labelledby="summary-title">
         <h2 id="summary-title">Project summary</h2>
-        <p class="summary">Brain–computer interfaces need to turn neural activity into commands quickly. Models such as POYO process overlapping windows of neural spikes from scratch, so some attention work repeats as the window moves. We’ll compare fresh and cached CUDA implementations on synthetic and recorded spike data to find when reusing partial attention results reduces latency and how GPU tiling and work distribution affect the tradeoff.</p>
+        <p class="summary">Brain–computer interfaces need to turn neural activity into commands quickly. Models such as POYO process overlapping windows of neural spikes from scratch, so some attention work repeats as the window moves. We compare fresh and cached CUDA implementations on synthetic and recorded spike data to find when reusing partial attention results reduces latency and how GPU tiling and work distribution affect the tradeoff.</p>
       </section>
 
       <section class="materials" aria-labelledby="materials-title">
         <h2 id="materials-title">Project materials</h2>
         <ul>
           <li><a href="proposal.pdf">Project proposal (PDF)</a><span class="when">Submitted Mon, Nov 9</span></li>
-          <li><span class="pending">Milestone report</span><span class="when">Due Mon, Nov 23</span></li>
+          <li><a href="milestone.pdf">Milestone report (PDF)</a><span class="when">Posted Mon, Nov 23</span></li>
           <li><span class="pending">Final report</span><span class="when">Due Thu, Dec 10</span></li>
           <li><span class="pending">Poster session</span><span class="when">Fri, Dec 11, 8:30–11:30 am</span></li>
         </ul>
       </section>
     </div>
+
+    <section class="section wrap" id="milestone" aria-labelledby="milestone-title">
+      <header>
+        <p class="label"><time datetime="2026-11-23">November 23, 2026</time></p>
+        <h2 id="milestone-title">Milestone results</h2>
+      </header>
+      <div class="prose">
+        <p>In two consecutive one-second windows from the Neural Latents Benchmark (NLB), 128 queries and 265 spikes recur. That gives us 33,920 query–spike calculations we can reuse when the decoder advances by half a second. Reusing those results reproduced the full second-window output within 1.79 × 10<sup>−7</sup> of fresh PyTorch attention (maximum absolute difference).</p>
+        <p>We tested whether the saved work reduced latency on an NVIDIA RTX 4060 Laptop GPU. The recorded windows come from the NLB MC_Maze_Small session. For the synthetic streams, we generated spike times and unit IDs from scratch and kept 50% of each window’s spikes in the next window.</p>
+        <table class="measurements">
+          <caption>Median encoder cross-attention time per window, including setup and cache matching</caption>
+          <thead>
+            <tr><th scope="col">Input</th><th scope="col">Fresh CUDA (original splits)</th><th scope="col">Cached CUDA</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Recorded NLB, 425 trial windows</th><td>0.717 ms</td><td>0.789 ms</td></tr>
+            <tr><th scope="row">Recorded NLB, 586 continuous windows</th><td>0.684 ms</td><td>0.771 ms</td></tr>
+            <tr><th scope="row">Synthetic, 500 spikes/window</th><td>0.666 ms</td><td>0.750 ms</td></tr>
+            <tr><th scope="row">Synthetic, 8,000 spikes/window</th><td>1.795 ms</td><td>1.747 ms</td></tr>
+            <tr><th scope="row">Synthetic, 32,000 spikes/window</th><td>7.204 ms</td><td>6.306 ms</td></tr>
+          </tbody>
+        </table>
+        <p>On the 425-window recorded replay, fresh CUDA took 0.717 ms with its original splits. Using the same splits as the cache, fresh CUDA took 0.793 ms and cached CUDA took 0.789 ms. The largest measured gain in the table came on the generated stream with 32,000 spikes per window (1.14×).</p>
+        <p><a href="milestone.pdf">Read the full milestone report (PDF)</a> or <a href="#schedule">see the remaining experiments and owners</a>.</p>
+      </div>
+    </section>
 
     <section class="section wrap" id="background" aria-labelledby="background-title">
       <header>
@@ -397,34 +433,71 @@
 
     <section class="section wrap" id="schedule" aria-labelledby="schedule-title">
       <header>
-        <p class="label">From the proposal</p>
+        <p class="label">Updated November 23</p>
         <h2 id="schedule-title">Schedule</h2>
       </header>
       <div class="prose">
         <table class="schedule">
           <thead>
-            <tr><th scope="col">Week</th><th scope="col">Work and checkpoint</th></tr>
+            <tr><th scope="col">Dates</th><th scope="col">Work and checkpoint</th></tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row">Nov. 7–15<br><span class="due">Proposal due Nov 9</span></th>
-              <td>Submit the proposal on Nov. 9. Confirm the target GPU. Get a few consecutive NLB windows through the basic PyTorch reference. Pick a two-window test case and identify exactly which query–spike pairs should be reusable.</td>
+              <th scope="row">Nov. 7–15<br><span class="due">Completed</span></th>
+              <td>Posted the proposal, ran three consecutive recorded windows through the PyTorch reference, and identified the query–spike pairs shared by the first two windows.</td>
             </tr>
             <tr>
-              <th scope="row">Nov. 16–22</th>
-              <td>Implement fresh split-key attention. Check it against PyTorch and collect initial latency measurements across spike counts. Use the PyTorch reference to check that reusing the shared bin’s partial result reproduces fresh attention after a 500&nbsp;ms shift.</td>
+              <th scope="row">Nov. 16–22<br><span class="due">Completed</span></th>
+              <td>Implemented fresh and cached split-key CUDA attention, checked two-window reuse against PyTorch, and measured attention latency on recorded NLB and generated spike streams.</td>
             </tr>
             <tr>
-              <th scope="row">Nov. 23–29<br><span class="due">Milestone due Nov 23</span></th>
-              <td>Submit the fresh baseline, initial measurements, and the two-window reuse check. Implement the CUDA cache and verify it over consecutive windows in the replay.</td>
+              <th scope="row">Nov. 23–25</th>
+              <td>
+                <p><b>Both.</b> Post the milestone and updated schedule on the project page and submit the PDF on Nov. 23.</p>
+                <p><b>Silvia.</b> Complete the fresh and cached CUDA implementations.</p>
+                <p><b>Vikram.</b> Benchmark on the GHC RTX 2080. Run both on W0–W2, the recorded trial replay, and the synthetic edge cases against the reference.</p>
+                <p><b>Checkpoint.</b> Save the correctness results and a first RTX 2080 timing table for original fresh CUDA, fresh CUDA with the cache’s split layout, and cached CUDA.</p>
+              </td>
             </tr>
             <tr>
-              <th scope="row">Nov. 30–Dec. 6</th>
-              <td>Compare fresh and cached attention on synthetic windows and the NLB data. Compare fixed and spike-count-based splits, then test tile sizes with the split policy held fixed. If time remains after these comparisons, test the adaptive cache policy if the measurements show a clear crossover. Try overlapping tile loads with computation if profiling shows that loads are a bottleneck. If we can time the replay starting from spike events, test whether reusing prepared keys and values reduces latency through the attention output.</td>
+              <th scope="row">Nov. 26–29</th>
+              <td>
+                <p><b>Silvia.</b> Implement a comparison that gives every time bin the same number of splits.</p>
+                <p><b>Vikram.</b> Compare it with assigning more splits to bins containing more spikes. Use the same queries, spike windows, and tile size for both policies. Include synthetic windows with spikes concentrated in one bin.</p>
+                <p><b>Checkpoint.</b> Produce a table showing the spike count per bin, the number of blocks assigned, and the split and merge times for each policy.</p>
+              </td>
             </tr>
             <tr>
-              <th scope="row">Dec. 7–11<br><span class="due">Report Dec 10 · Poster Dec 11</span></th>
-              <td>Rerun any questionable measurements, finish the figures and poster. Submit the report by Dec.10 and present the poster on Dec 11.</td>
+              <th scope="row">Nov. 30–Dec. 2</th>
+              <td>
+                <p><b>Vikram.</b> Vary how many queries a block processes together while holding the number of spikes per tile fixed.</p>
+                <p><b>Silvia.</b> Vary the number of spikes per tile while holding the query count fixed. Keep the split policy constant and check every configuration against the reference before timing it.</p>
+                <p><b>Checkpoint.</b> Produce a tile-size comparison on recorded, sparse synthetic, and dense synthetic windows. Select configurations for the final replay runs.</p>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Dec. 3–6</th>
+              <td>
+                <p><b>Silvia.</b> Run the selected configurations on the 425-window NLB trial replay and the 586-window continuous replay.</p>
+                <p><b>Vikram.</b> Run the synthetic experiments across spike counts and overlap levels. Record median and 99th-percentile latency per window, including cache setup.</p>
+                <p><b>Checkpoint.</b> Finish the recorded-data latency table and the synthetic speedup graph. If time permits, use these measurements to test a rule that chooses fresh or cached attention for each window.</p>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Dec. 7–9</th>
+              <td>
+                <p><b>Vikram.</b> Repeat measurements with unstable tail latency and check that each figure identifies the GPU, input, baseline, and timing boundaries.</p>
+                <p><b>Silvia.</b> Prepare the W0-to-W1 reuse diagram and the figures for split assignment and tile size.</p>
+                <p><b>Checkpoint.</b> Finish the figures and captions. Verify each reported number against its benchmark output.</p>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Dec. 10–11</th>
+              <td>
+                <p><b>Both.</b> Finish the report, post it on the project website, and submit it on Dec. 10.</p>
+                <p><b>Both.</b> Submit the poster and source code, rehearse the explanation of the two-window example, and present on Dec. 11.</p>
+                <p><b>Checkpoint.</b> Submit the final materials and present the measured results at the poster session.</p>
+              </td>
             </tr>
           </tbody>
         </table>
